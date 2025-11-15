@@ -15,12 +15,12 @@
   </button>
 </form>
 
-<form action="{% url 'complete_task' task.id %}" method="POST">
-  {% csrf_token %}
-  <button>
-    complete
-  </button>
-</form>
+{% if show_complete_button %}
+  <form action="{% url 'complete_task' task.id %}" method="POST">
+    {% csrf_token %}
+    <button>complete</button>
+  </form>
+{% endif %}
 
 <form action="{% url 'delete_task' task.id %}" method="POST">
   {% csrf_token %}

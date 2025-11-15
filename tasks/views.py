@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+
+from djangocrud import settings
 from .models import Task
 
 from .forms import TaskForm
@@ -77,13 +79,19 @@ def signin(request):
 
         login(request, user)
         return redirect('tasks')
+    
+    
 
 @login_required
 def task_detail(request, task_id):
     if request.method == 'GET':
         task = get_object_or_404(Task, pk=task_id, user=request.user)
         form = TaskForm(instance=task)
-        return render(request, 'task_detail.html', {'task': task, 'form': form})
+        return render(request, 'task_detail.html', {
+            'task': task, 
+            'form': form,
+            'show_complete_button': settings.ENABLE_TASK_COMPLETION
+        })
     else:
         try:
             task = get_object_or_404(Task, pk=task_id, user=request.user)

@@ -2,31 +2,78 @@
 
 {% block content %}
 
-{{task.title}}
+<div class="mb-4">
+  <a href="{% url 'tasks' %}" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-left"></i> Back to Tasks
+  </a>
+</div>
 
-{{error}}
+<h1 class="display-6 mb-4">
+  <i class="bi bi-pencil-square text-primary"></i> Edit Task
+</h1>
 
-<form method="POST">
-  {% csrf_token %}
-  {{form.as_p}}
-
-  <button>
-    Update
-  </button>
-</form>
-
-{% if show_complete_button %}
-  <form action="{% url 'complete_task' task.id %}" method="POST">
-    {% csrf_token %}
-    <button>complete</button>
-  </form>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+  <i class="bi bi-exclamation-triangle"></i> {{ error }}
+</div>
 {% endif %}
 
-<form action="{% url 'delete_task' task.id %}" method="POST">
-  {% csrf_token %}
-  <button>
-    delete
-  </button>
-</form>
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <h3 class="card-title">{{ task.title }}</h3>
+    
+    {% if show_dates %}
+    <div class="text-muted small mb-3">
+      <i class="bi bi-calendar"></i> Created: {{ task.created|date:"M j, Y H:i" }}
+      {% if task.datecompleted %}
+        <br><i class="bi bi-check2"></i> Completed: {{ task.datecompleted|date:"M j, Y H:i" }}
+      {% endif %}
+    </div>
+    {% endif %}
+    
+    <form method="POST" class="mb-3">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form.title.label_tag }}
+        <input type="text" name="title" value="{{ task.title }}" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        {{ form.description.label_tag }}
+        <textarea name="description" class="form-control" rows="4" required>{{ task.description }}</textarea>
+      </div>
+      
+      {% if show_importance %}
+      <div class="mb-3 form-check">
+        <input type="checkbox" name="important" class="form-check-input" id="importantCheck" {% if task.important %}checked{% endif %}>
+        <label class="form-check-label" for="importantCheck">
+          <i class="bi bi-star"></i> Mark as important
+        </label>
+      </div>
+      {% endif %}
+      
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-save"></i> Update Task
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="d-flex gap-2">
+  {% if show_complete_button and not task.datecompleted %}
+  <form action="{% url 'complete_task' task.id %}" method="POST" class="flex-fill">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success w-100">
+      <i class="bi bi-check-circle"></i> Mark as Complete
+    </button>
+  </form>
+  {% endif %}
+
+  <form action="{% url 'delete_task' task.id %}" method="POST" class="flex-fill" onsubmit="return confirm('Are you sure you want to delete this task?');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger w-100">
+      <i class="bi bi-trash"></i> Delete Task
+    </button>
+  </form>
+</div>
 
 {% endblock %}

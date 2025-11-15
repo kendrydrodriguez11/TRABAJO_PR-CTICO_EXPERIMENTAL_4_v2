@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from .config_product import get_active_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,6 +127,15 @@ LOGIN_URL = '/signin'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# ========================================
+# CONFIGURACIÓN DE VARIABILIDAD SPL
+# ========================================
+# Cargar configuración del producto activo
+PRODUCT_CONFIG = get_active_config()
 
-# Configuración de variabilidad
-ENABLE_TASK_COMPLETION = True
+# Aplicar características según la variante
+ENABLE_TASK_COMPLETION = PRODUCT_CONFIG['ENABLE_TASK_COMPLETION']
+ENABLE_TASK_IMPORTANCE = PRODUCT_CONFIG['ENABLE_TASK_IMPORTANCE']
+ENABLE_COMPLETED_TASKS_VIEW = PRODUCT_CONFIG['ENABLE_COMPLETED_TASKS_VIEW']
+SHOW_TASK_DATES = PRODUCT_CONFIG['SHOW_TASK_DATES']
+PRODUCT_NAME = PRODUCT_CONFIG['name']

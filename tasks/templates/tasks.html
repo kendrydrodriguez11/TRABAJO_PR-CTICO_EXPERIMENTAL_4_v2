@@ -1,26 +1,56 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Tasks</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="display-5">
+    {% if completed_view %}
+      <i class="bi bi-check-circle-fill text-success"></i> Completed Tasks
+    {% else %}
+      <i class="bi bi-list-task text-primary"></i> My Tasks
+    {% endif %}
+  </h1>
+  <a href="{% url 'create_task' %}" class="btn btn-primary">
+    <i class="bi bi-plus-circle"></i> New Task
+  </a>
+</div>
 
-<ul>
+{% if tasks %}
+<div class="row">
   {% for task in tasks %}
-  <li>
-    <a href="{% url 'task_detail' task.id %}">
-      {% if task.important %}
-        <strong>{{ task.title }}</strong>
-      {% else %}
-        {{ task.id }} - {{ task.title }}
-      {% endif %}
-      <p>{{ task.description }}</p>
-      <small>{{ task.datecompleted|date:"M j, Y H:i" }}</small>
-    </a>
-    <br>
-    <a href="{% url 'task_detail' task.id %}" class="btn btn-primary">
-      Ver detalles
-    </a>
-  </li>
+  <div class="col-md-6 col-lg-4 mb-3">
+    <div class="card h-100 shadow-sm {% if task.important and show_importance %}border-danger{% endif %}">
+      <div class="card-body">
+        <h5 class="card-title">
+          {% if task.important and show_importance %}
+            <i class="bi bi-star-fill text-warning"></i>
+          {% endif %}
+          {{ task.title }}
+        </h5>
+        <p class="card-text text-muted">{{ task.description|truncatewords:15 }}</p>
+        
+        {% if show_dates %}
+        <div class="text-muted small mb-2">
+          <i class="bi bi-calendar"></i> Created: {{ task.created|date:"M j, Y" }}
+          {% if task.datecompleted %}
+            <br><i class="bi bi-check2"></i> Completed: {{ task.datecompleted|date:"M j, Y H:i" }}
+          {% endif %}
+        </div>
+        {% endif %}
+        
+        <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-outline-primary w-100">
+          <i class="bi bi-eye"></i> View Details
+        </a>
+      </div>
+    </div>
+  </div>
   {% endfor %}
-</ul>
+</div>
+{% else %}
+<div class="alert alert-info text-center" role="alert">
+  <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+  <h4>No tasks found</h4>
+  <p class="mb-0">Start by creating your first task!</p>
+</div>
+{% endif %}
 
 {% endblock %}

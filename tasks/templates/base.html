@@ -4,15 +4,33 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Django CRUD</title>
+    <title>{{ settings.PRODUCT_NAME|default:"Django CRUD" }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding-bottom: 50px;
+      }
+      .content-wrapper {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        padding: 30px;
+        margin-top: 30px;
+      }
+    </style>
   </head>
   <body>
     {% include '_navbar.html' %}
     
-    {% block content %}
-    {% endblock %}
+    <div class="container">
+      <div class="content-wrapper">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
   </body>
 </html>

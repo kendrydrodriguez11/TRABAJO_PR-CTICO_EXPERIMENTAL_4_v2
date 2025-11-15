@@ -1,6 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
   <div class="container">
-    <a class="navbar-brand" href="/">Navbar</a>
+    <a class="navbar-brand fw-bold" href="/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check2-square me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+      </svg>
+      {{ settings.PRODUCT_NAME|default:"TaskManager" }}
+    </a>
     <button
       class="navbar-toggler"
       type="button"
@@ -15,29 +22,45 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a href="/" class="nav-link">Home</a>
+          <a href="/" class="nav-link">
+            <i class="bi bi-house-door"></i> Home
+          </a>
         </li>
         {% if user.is_authenticated %}
+        
+        {% if settings.ENABLE_COMPLETED_TASKS_VIEW %}
         <li class="nav-item">
-          <a href="{% url 'tasks_completed' %}" class="nav-link"
-            >complted tasks</a
-          >
+          <a href="{% url 'tasks_completed' %}" class="nav-link">
+            <i class="bi bi-check-circle"></i> Completed
+          </a>
+        </li>
+        {% endif %}
+        
+        <li class="nav-item">
+          <a href="{% url 'tasks' %}" class="nav-link">
+            <i class="bi bi-list-task"></i> My Tasks
+          </a>
         </li>
         <li class="nav-item">
-          <a href="{% url 'tasks' %}" class="nav-link">Tasks</a>
+          <a href="{% url 'create_task' %}" class="nav-link btn btn-sm btn-outline-success ms-2">
+            <i class="bi bi-plus-circle"></i> New Task
+          </a>
         </li>
         <li class="nav-item">
-          <a href="{% url 'create_task' %}" class="nav-link">Create Task</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link text-danger" href="/logout">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
         </li>
         {% else %}
         <li class="nav-item">
-          <a href="/signin" class="nav-link">Login</a>
+          <a href="/signin" class="nav-link">
+            <i class="bi bi-box-arrow-in-right"></i> Login
+          </a>
         </li>
         <li class="nav-item">
-          <a href="/signup" class="nav-link">Register</a>
+          <a href="/signup" class="nav-link btn btn-sm btn-outline-primary ms-2">
+            <i class="bi bi-person-plus"></i> Register
+          </a>
         </li>
         {% endif %}
       </ul>

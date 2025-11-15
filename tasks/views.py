@@ -5,10 +5,9 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
-from djangocrud import settings
 from .models import Task
-
 from .forms import TaskForm
 
 # Create your views here.
@@ -35,18 +34,34 @@ def signup(request):
 @login_required
 def tasks(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
-    return render(request, 'tasks.html', {"tasks": tasks})
+    return render(request, 'tasks.html', {
+        "tasks": tasks,
+        "show_dates": settings.SHOW_TASK_DATES,
+        "show_importance": settings.ENABLE_TASK_IMPORTANCE
+    })
 
 @login_required
 def tasks_completed(request):
+    # Solo mostrar si la característica está habilitada
+    if not settings.ENABLE_COMPLETED_TASKS_VIEW:
+        return redirect('tasks')
+    
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
-    return render(request, 'tasks.html', {"tasks": tasks})
+    return render(request, 'tasks.html', {
+        "tasks": tasks,
+        "completed_view": True,
+        "show_dates": settings.SHOW_TASK_DATES,
+        "show_importance": settings.ENABLE_TASK_IMPORTANCE
+    })
 
 
 @login_required
 def create_task(request):
     if request.method == "GET":
-        return render(request, 'create_task.html', {"form": TaskForm})
+        return render(request, 'create_task.html', {
+            "form": TaskForm,
+            "show_importance": settings.ENABLE_TASK_IMPORTANCE
+        })
     else:
         try:
             form = TaskForm(request.POST)
@@ -55,11 +70,17 @@ def create_task(request):
             new_task.save()
             return redirect('tasks')
         except ValueError:
-            return render(request, 'create_task.html', {"form": TaskForm, "error": "Error creating task."})
+            return render(request, 'create_task.html', {
+                "form": TaskForm, 
+                "error": "Error creating task.",
+                "show_importance": settings.ENABLE_TASK_IMPORTANCE
+            })
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', {
+        "product_name": settings.PRODUCT_NAME
+    })
 
 
 @login_required
@@ -90,7 +111,9 @@ def task_detail(request, task_id):
         return render(request, 'task_detail.html', {
             'task': task, 
             'form': form,
-            'show_complete_button': settings.ENABLE_TASK_COMPLETION
+            'show_complete_button': settings.ENABLE_TASK_COMPLETION,
+            'show_importance': settings.ENABLE_TASK_IMPORTANCE,
+            'show_dates': settings.SHOW_TASK_DATES
         })
     else:
         try:
@@ -99,10 +122,20 @@ def task_detail(request, task_id):
             form.save()
             return redirect('tasks')
         except ValueError:
-            return render(request, 'task_detail.html', {'task': task, 'form': form, 'error': 'Error updating task.'})
+            return render(request, 'task_detail.html', {
+                'task': task, 
+                'form': form, 
+                'error': 'Error updating task.',
+                'show_complete_button': settings.ENABLE_TASK_COMPLETION,
+                'show_importance': settings.ENABLE_TASK_IMPORTANCE
+            })
 
 @login_required
 def complete_task(request, task_id):
+    # Solo permitir si la característica está habilitada
+    if not settings.ENABLE_TASK_COMPLETION:
+        return redirect('tasks')
+    
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == 'POST':
         task.datecompleted = timezone.now()

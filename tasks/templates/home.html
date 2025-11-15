@@ -1,7 +1,65 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 
-<div class="container">
-  <h1>Home</h1>
+<div class="text-center py-5">
+  <div class="mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-check2-square text-primary" viewBox="0 0 16 16">
+      <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+      <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+    </svg>
+  </div>
+  
+  <h1 class="display-3 fw-bold mb-3">{{ product_name }}</h1>
+  <p class="lead text-muted mb-4">
+    Organize your tasks efficiently and boost your productivity
+  </p>
+  
+  {% if user.is_authenticated %}
+  <div class="d-flex gap-3 justify-content-center">
+    <a href="{% url 'tasks' %}" class="btn btn-primary btn-lg">
+      <i class="bi bi-list-task"></i> My Tasks
+    </a>
+    <a href="{% url 'create_task' %}" class="btn btn-outline-success btn-lg">
+      <i class="bi bi-plus-circle"></i> Create New Task
+    </a>
+  </div>
+  {% else %}
+  <div class="d-flex gap-3 justify-content-center">
+    <a href="/signin" class="btn btn-primary btn-lg">
+      <i class="bi bi-box-arrow-in-right"></i> Login
+    </a>
+    <a href="/signup" class="btn btn-outline-primary btn-lg">
+      <i class="bi bi-person-plus"></i> Register
+    </a>
+  </div>
+  {% endif %}
+  
+  <div class="mt-5">
+    <h4 class="mb-3">Key Features</h4>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="p-3 border rounded">
+          <i class="bi bi-shield-check fs-1 text-success"></i>
+          <h5 class="mt-2">Secure</h5>
+          <p class="text-muted small">Your data is protected</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 border rounded">
+          <i class="bi bi-lightning-charge fs-1 text-warning"></i>
+          <h5 class="mt-2">Fast</h5>
+          <p class="text-muted small">Quick task management</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 border rounded">
+          <i class="bi bi-phone fs-1 text-info"></i>
+          <h5 class="mt-2">Responsive</h5>
+          <p class="text-muted small">Works on any device</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
